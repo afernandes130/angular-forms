@@ -13,43 +13,45 @@
       <message-error-forms errmsg = "Digite um e-mail válido"></message-error-forms>
     </div>
   </div>
-  <div class="form-row">
-    <div class="form-group col-3" >
-      <label for="cep">CEP</label>
-      <input #cep = 'ngModel' type="text" class="form-control" name="cep" [(ngModel)]="user.cep" autocomplete="false" required [ngClass]="aplicaCssErro(cep)" >
-      <div class="invalid-feedback">
-        <message-error-forms errmsg = "Digite seu CEP"></message-error-forms>
+  <div ngModelGroup='endereço'>
+    <div class="form-row">
+      <div class="form-group col-3" >
+        <label for="cep">CEP</label>
+        <input #cep = 'ngModel' type="text" class="form-control" name="cep" [(ngModel)]="user.endereco.cep" autocomplete="false" required [ngClass]="aplicaCssErro(cep)" (blur)="BuscaCEP($event.target.value)" >
+        <div class="invalid-feedback">
+          <message-error-forms errmsg = "Digite seu CEP"></message-error-forms>
+        </div>
+      </div>
+      <div class="form-group col-3" >
+        <label for="numero">Número</label>
+        <input #numero = 'ngModel' type="text" class="form-control" name="numero" [(ngModel)]="user.endereco.numero" autocomplete="false" required [ngClass]="aplicaCssErro(numero)" >
+        <div class="invalid-feedback">
+          <message-error-forms errmsg = "Digite o número"></message-error-forms>
+        </div>
+      </div>
+      <div class="form-group col-6" >
+        <label for="complemento">Complemento</label>
+        <input #complemento = 'ngModel' type="text" class="form-control" name="complemento" [(ngModel)]="user.endereco.complemento" autocomplete="false" >
       </div>
     </div>
-    <div class="form-group col-3" >
-      <label for="numero">Número</label>
-      <input #numero = 'ngModel' type="text" class="form-control" name="numero" [(ngModel)]="user.numero" autocomplete="false" required [ngClass]="aplicaCssErro(numero)" >
-      <div class="invalid-feedback">
-        <message-error-forms errmsg = "Digite o número"></message-error-forms>
+    <div class="form-group" >
+      <label for="rua">Rua</label>
+      <input #rua = 'ngModel' type="text" class="form-control" name="rua" [(ngModel)]="user.endereco.rua" readonly >
+    </div>
+    <div class="form-row">
+      <div class="form-group col-4" >
+        <label for="bairro">Bairro</label>
+        <input #bairro = 'ngModel' type="text" class="form-control" name="bairro" [(ngModel)]="user.endereco.bairro" readonly >
       </div>
-    </div>
-    <div class="form-group col-6" >
-      <label for="complemento">Complemento</label>
-      <input #complemento = 'ngModel' type="text" class="form-control" name="complemento" [(ngModel)]="user.complemento" autocomplete="false" >
-    </div>
-  </div>
-  <div class="form-group" >
-    <label for="rua">Rua</label>
-    <input #rua = 'ngModel' type="text" class="form-control" name="rua" [(ngModel)]="user.rua" disabled=true >
-  </div>
-  <div class="form-row">
-    <div class="form-group col-4" >
-      <label for="bairro">Bairro</label>
-      <input #bairro = 'ngModel' type="text" class="form-control" name="bairro" [(ngModel)]="user.bairro" disabled=true >
-    </div>
-    <div class="form-group col-4" >
-      <label for="cidade">Cidade</label>
-      <input #cidade = 'ngModel' type="text" class="form-control" name="cidade" [(ngModel)]="user.cidade" disabled=true >
-    </div>
-    <div class="form-group col-4" >
-      <label for="estado">Estado</label>
-      <input #estado = 'ngModel' type="text" class="form-control" name="estado" [(ngModel)]="user.estado" disabled=true >
-    </div>
+      <div class="form-group col-4" >
+        <label for="cidade">Cidade</label>
+        <input #cidade = 'ngModel' type="text" class="form-control" name="cidade" [(ngModel)]="user.endereco.cidade" readonly >
+      </div>
+      <div class="form-group col-4" >
+        <label for="estado">Estado</label>
+        <input #estado = 'ngModel' type="text" class="form-control" name="estado" [(ngModel)]="user.endereco.estado" readonly >
+      </div>
+    </div>  
   </div>
   <button type="submit" class="btn btn-primary" [disabled]='f.invalid' >Enviar</button>
   <br>
