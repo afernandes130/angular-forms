@@ -7,7 +7,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: 'template-form', component: TemplateFormComponent },
   { path: 'data-form', component: DataFormComponent },
-  { path: '', pathMatch: 'full', redirectTo: 'template-form' }  
+  { path: '', pathMatch: 'full', redirectTo: 'data-form' }  
 ];
 
 @NgModule({

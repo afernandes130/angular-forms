@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { error } from 'protractor';
+import { log } from 'util';
+import { from } from 'rxjs';
 
 
 @Component({
@@ -34,7 +36,9 @@ export class TemplateFormComponent implements OnInit {
     }
   }
 
-  BuscaCEP(cep){
+  BuscaCEP(cep, form){
+
+    this.LimpaFormulario(form);
     //Nova variável "cep" somente com dígitos.
     cep = cep.replace(/\D/g, '');
 
@@ -44,24 +48,37 @@ export class TemplateFormComponent implements OnInit {
        const validacep = /^[0-9]{8}$/;
        if(validacep.test(cep)) {
          this._httpclient.get(`https://viacep.com.br/ws/${cep}/json/`)
-         .subscribe(
-            resp => {
-              this.user.endereco.rua = resp['logradouro']
-              this.user.endereco.bairro = resp['bairro']
-              this.user.endereco.cidade = resp['localidade']
-              this.user.endereco.estado = resp['uf']
-              console.log(resp)},
-            error => {console.log(error)}
-         );
+         .subscribe(resp=> this.PreencheFormulario(resp, form));
        }
        else {
          //cep é inválido.
          this.user.endereco.cep = ''
          alert("Formato de CEP inválido.");
        }
-
      }
+  }
 
+  PreencheFormulario(dados, formulario){
+    formulario.form.patchValue({
+      endereco : {
+        rua: dados.logradouro,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf,
+      }
+    })
+  }
+
+  
+  LimpaFormulario(formulario){
+    formulario.form.patchValue({
+      endereco : {
+        rua: null,
+        bairro: null,
+        cidade: null,
+        estado: null,
+      }
+    })
   }
 
   constructor(private _httpclient : HttpClient) { }

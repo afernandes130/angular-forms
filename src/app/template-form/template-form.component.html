@@ -13,11 +13,11 @@
       <message-error-forms errmsg = "Digite um e-mail válido"></message-error-forms>
     </div>
   </div>
-  <div ngModelGroup='endereço'>
+  <div ngModelGroup='endereco'>
     <div class="form-row">
       <div class="form-group col-3" >
         <label for="cep">CEP</label>
-        <input #cep = 'ngModel' type="text" class="form-control" name="cep" [(ngModel)]="user.endereco.cep" autocomplete="false" required [ngClass]="aplicaCssErro(cep)" (blur)="BuscaCEP($event.target.value)" >
+        <input #cep = 'ngModel' type="text" class="form-control" name="cep" [(ngModel)]="user.endereco.cep" autocomplete="false" required [ngClass]="aplicaCssErro(cep)" (blur)="BuscaCEP($event.target.value, f)" >
         <div class="invalid-feedback">
           <message-error-forms errmsg = "Digite seu CEP"></message-error-forms>
         </div>
