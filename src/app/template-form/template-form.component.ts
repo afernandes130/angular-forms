@@ -1,3 +1,4 @@
+import { CepsService } from './../utils/services/cep/ceps.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { error } from 'protractor';
@@ -39,23 +40,7 @@ export class TemplateFormComponent implements OnInit {
   BuscaCEP(cep, form){
 
     this.LimpaFormulario(form);
-    //Nova variável "cep" somente com dígitos.
-    cep = cep.replace(/\D/g, '');
-
-     //Verifica se campo cep possui valor informado.
-     if (cep != "") {
-       //Expressão regular para validar o CEP.
-       const validacep = /^[0-9]{8}$/;
-       if(validacep.test(cep)) {
-         this._httpclient.get(`https://viacep.com.br/ws/${cep}/json/`)
-         .subscribe(resp=> this.PreencheFormulario(resp, form));
-       }
-       else {
-         //cep é inválido.
-         this.user.endereco.cep = ''
-         alert("Formato de CEP inválido.");
-       }
-     }
+    this._cepserv.Get(cep).subscribe(resp=> this.PreencheFormulario(resp, form));
   }
 
   PreencheFormulario(dados, formulario){
@@ -81,7 +66,10 @@ export class TemplateFormComponent implements OnInit {
     })
   }
 
-  constructor(private _httpclient : HttpClient) { }
+  constructor(
+    private _httpclient : HttpClient,
+    private _cepserv : CepsService
+    ) { }
 
   ngOnInit(): void {
   }

@@ -1,8 +1,11 @@
+import { ExemplosDatasourceService } from './../utils/services/exemplos/exemplos-datasource.service';
+import { CepsService } from './../utils/services/cep/ceps.service';
 import { Estados } from './../utils/models/estados';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EstadosService } from '../utils/services/estados.service';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { EstadosService } from '../utils/services/estados/estados.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-data-form',
@@ -12,12 +15,18 @@ import { EstadosService } from '../utils/services/estados.service';
 export class DataFormComponent implements OnInit {
   
   formulario : FormGroup;
-  estados : Estados[];
+  estados: Observable<Estados[]>;
+  tecnologias : any;
+  newsletters : any;
+  frameworksarr : any = ['Angular', 'React', 'Vue', '.NetCore'];
+  teste2 : FormArray;
 
   constructor(
       private formbuilder : FormBuilder,
       private http: HttpClient,
-      private estadosserv : EstadosService
+      private estadosserv : EstadosService,
+      private cepserv : CepsService,
+      private exemplosserv : ExemplosDatasourceService
   ) { }
 
   ngOnInit(): void {
@@ -32,17 +41,31 @@ export class DataFormComponent implements OnInit {
         bairro:  [null, [Validators.required]],
         cidade:  [null, [Validators.required]],
         estado:  [null, [Validators.required]],
-      })  
+      }),
+      tecnologias: [null],
+      newsletters: ['sim'],
+      termsuse: [null, Validators.pattern('true')],
+      frameworks: this.biuldFramework()
     })
 
-    this.estadosserv.get()
-    .subscribe(res => 
-        {this.estados = res;
-        console.log(this.estados[0].nome)}
-      )
-    console.log("aqui");
-    
+    this.estados = this.estadosserv.get()
+    this.tecnologias = this.exemplosserv.getTecnologias();
+    this.newsletters = this.exemplosserv.getNewsLetters();
+   }
+
+  biuldFramework(){
+    const values = this.frameworksarr.map(v => new FormControl(false));
+    return this.formbuilder.array(values);
   }
+
+  get frameworks(): FormArray {
+    return this.formulario.get('frameworks') as FormArray;
+  }
+
+  ShowConsole(){
+      const teste = ''
+      console.log(teste)
+    }
 
   onSubmit(){
     if (this.formulario.valid) {
@@ -62,7 +85,6 @@ export class DataFormComponent implements OnInit {
   ShowValidation(fromgroup : FormGroup){
       Object.keys(fromgroup.controls).forEach(campo => {
         const controle = fromgroup.get(campo)
-        console.log(controle)
         if (controle.invalid) {
             controle.markAsDirty() 
 
@@ -86,22 +108,8 @@ export class DataFormComponent implements OnInit {
 
   BuscaCEP(){
     this.LimpaFormulario();
-
     let cep = this.formulario.get('endereco.cep').value;
-    cep = cep.replace(/\D/g, '');
-     if (cep != "") {
-       //Expressão regular para validar o CEP.
-       const validacep = /^[0-9]{8}$/;
-       if(validacep.test(cep)) {
-        
-         this.http.get(`https://viacep.com.br/ws/${cep}/json/`)
-         .subscribe(resp=> this.PreencheFormulario(resp));
-       }
-       else {
-         //cep é inválido.
-         alert("Formato de CEP inválido.");
-       }
-     }
+    this.cepserv.Get(cep).subscribe(resp=> this.PreencheFormulario(resp));
   }
 
   PreencheFormulario(dados){
@@ -124,6 +132,15 @@ export class DataFormComponent implements OnInit {
         cidade: null,
         estado: null,
       }
+    })
+  }
+
+  setTecnologias(){
+    this.formulario.patchValue({
+      tecnologias : [
+        "java",
+        "react"
+      ]
     })
   }
 

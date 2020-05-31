@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DebugFormComponent } from './debug-form/debug-form.component';
 import { MessageErrorFormsComponent } from './message-error-forms/message-error-forms.component';
-import { EstadosService } from './services/estados.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
@@ -18,6 +17,6 @@ import { HttpClientModule } from '@angular/common/http';
     MessageErrorFormsComponent,
     HttpClientModule
   ],
-  providers: [EstadosService],
+  providers: [],
 })
 export class UtilsModule { }
