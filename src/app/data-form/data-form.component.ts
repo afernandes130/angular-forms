@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { EstadosService } from '../utils/services/estados/estados.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
+import { FormValidations } from '../utils/validations-forms';
 
 @Component({
   selector: 'app-data-form',
@@ -21,6 +23,7 @@ export class DataFormComponent implements OnInit {
   frameworksarr : any = ['Angular', 'React', 'Vue', '.NetCore'];
   teste2 : FormArray;
 
+
   constructor(
       private formbuilder : FormBuilder,
       private http: HttpClient,
@@ -32,9 +35,10 @@ export class DataFormComponent implements OnInit {
   ngOnInit(): void {
     this.formulario = this.formbuilder.group({
       nome: [null, [Validators.required]],
-      email: [null, [Validators.required, Validators.email]],
+      email: [null, [Validators.required, Validators.email],[this.emailExists.bind(this)]],
+      email2: [null, [Validators.required, Validators.email, FormValidations.equalsTo('email')]],
       endereco: this.formbuilder.group({
-        cep:  [null, [Validators.required]],
+        cep:  [null, [Validators.required, FormValidations.cepvalidator]],
         numero:  [null, [Validators.required]],
         complemento: [null],
         rua:  [null, [Validators.required]],
@@ -51,27 +55,47 @@ export class DataFormComponent implements OnInit {
     this.estados = this.estadosserv.get()
     this.tecnologias = this.exemplosserv.getTecnologias();
     this.newsletters = this.exemplosserv.getNewsLetters();
+    
    }
 
   biuldFramework(){
     const values = this.frameworksarr.map(v => new FormControl(false));
-    return this.formbuilder.array(values);
+    return this.formbuilder.array(values, FormValidations.requireMinCheckbox(1));
   }
 
   get frameworks(): FormArray {
     return this.formulario.get('frameworks') as FormArray;
   }
 
+  get cep(): FormArray {
+    return this.formulario.get('endereco.cep') as FormArray;
+  }
+
+  emailExists(control : FormControl){
+     return this.exemplosserv.VerificaEmail(control.value)
+     .pipe(
+       map(exists => exists ? {emailalready:true} : null)
+     )
+  }
+
   ShowConsole(){
-      const teste = ''
-      console.log(teste)
+        const teste = this.formulario.get('email2');
+        console.log(teste)
     }
 
   onSubmit(){
     if (this.formulario.valid) {
-      this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value))
+
+      let valueSubmit = Object.assign({}, this.formulario) 
+      let checkboxlist = valueSubmit.controls.frameworks.value;
+      
+        valueSubmit = Object.assign(valueSubmit, {
+          frameworks :  checkboxlist.map((v : any ,i : number) => v ? this.frameworksarr[i] : null).filter(v  => v != null )
+        })
+
+        console.log(valueSubmit);  
+      this.http.post('https://httpbin.org/post', JSON.stringify({}))
       .subscribe(resp =>{
-        console.log(resp)
         this.resetForm();
       } )  
     }
@@ -143,5 +167,7 @@ export class DataFormComponent implements OnInit {
       ]
     })
   }
+
+
 
 }
