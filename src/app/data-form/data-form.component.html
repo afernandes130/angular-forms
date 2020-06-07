@@ -3,6 +3,7 @@
     <label for="nome">Nome</label>
     <input type="text" class="form-control" formControlName="nome" placeholder="Nome" [ngClass]="aplicaCssErro('nome')" >
     <div class="invalid-feedback">
+      <app-errors-messages [control] = "formulario.get('nome')" ></app-errors-messages>
       <message-error-forms errmsg = "Nome é obrigatório"></message-error-forms>
      </div>
   </div>

@@ -34,7 +34,7 @@ export class DataFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.formulario = this.formbuilder.group({
-      nome: [null, [Validators.required]],
+      nome: [null, [Validators.required, Validators.email]],
       email: [null, [Validators.required, Validators.email],[this.emailExists.bind(this)]],
       email2: [null, [Validators.required, Validators.email, FormValidations.equalsTo('email')]],
       endereco: this.formbuilder.group({

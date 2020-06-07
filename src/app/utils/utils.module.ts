@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { DebugFormComponent } from './debug-form/debug-form.component';
 import { MessageErrorFormsComponent } from './message-error-forms/message-error-forms.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ErrorsMessagesComponent } from './errors-messages/errors-messages.component';
 
 @NgModule({
   declarations: [
     DebugFormComponent,
-    MessageErrorFormsComponent
+    MessageErrorFormsComponent,
+    ErrorsMessagesComponent
   ],
   imports: [
     CommonModule
@@ -15,7 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
   exports: [
     DebugFormComponent,
     MessageErrorFormsComponent,
-    HttpClientModule
+    HttpClientModule,
+    ErrorsMessagesComponent
   ],
   providers: [],
 })
